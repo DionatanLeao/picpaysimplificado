@@ -32,6 +32,7 @@ public class User {
     public User(UserDTO data) {
         firstName = data.firstName();
         lastName = data.lastName();
+        document = data.document();
         balance = data.balance();
         userType = data.type();
         password = data.password();
