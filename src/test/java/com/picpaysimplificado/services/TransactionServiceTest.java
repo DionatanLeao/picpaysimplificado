@@ -97,6 +97,43 @@ class TransactionServiceTest {
 
     @Test
     @DisplayName("Should throw Exception when Transaction is not allowed")
-    void createTransactionCase2() {
+    void createTransactionCase2() throws Exception {
+        User sender = new User(
+                1L,
+                "Sender",
+                "One",
+                "11111111111",
+                "sender@email.com",
+                "12345",
+                new BigDecimal(10),
+                UserType.COMMON
+        );
+
+        User receiver = new User(
+                2L,
+                "Receiver",
+                "One",
+                "22222222222",
+                "receiver@email.com",
+                "12345",
+                new BigDecimal(10),
+                UserType.COMMON
+        );
+
+        when(userService.findUserById(1L)).thenReturn(sender);
+        when(userService.findUserById(2L)).thenReturn(receiver);
+
+        when(authorizationService.authorizeTransaction(any(), any())).thenReturn(false);
+
+        Exception thrown = Assertions.assertThrows(Exception.class, () -> {
+            TransactionDTO request = new TransactionDTO(
+                    new BigDecimal(10L),
+                    1L,
+                    2L
+            );
+            transactionService.createTransaction(request);
+        });
+
+        assertEquals("Transação não autorizada", thrown.getMessage());
     }
 }
